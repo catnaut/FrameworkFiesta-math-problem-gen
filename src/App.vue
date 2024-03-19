@@ -1,9 +1,11 @@
 <script setup>
 import MainNav from './components/MainView/MainNav.vue';
+import MainTable from './components/MainView/MainTable.vue';
 </script>
 
 <template>
   <MainNav />
+  <MainTable />
 </template>
 
 <style scoped>
