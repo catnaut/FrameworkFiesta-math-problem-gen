@@ -32,7 +32,7 @@ watch([add, sub, mul, div], () => {
 </script>
 
 <template>
-    <div class="border rounded-md space-y-2">
+    <div class="space-y-2.5">
         <Label for="operators" class="text-center">运算符</Label>
         <!-- TODO: 检查输入提示 -->
         <div id='operators' class="flex  space-x-2.5 h-10 items-center justify-between p-2">
