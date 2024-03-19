@@ -6,7 +6,7 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 
 import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
-
+import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   css: {
@@ -17,7 +17,7 @@ export default defineConfig({
   plugins: [vue(), VueDevTools()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': path.resolve(__dirname, './src')
     }
   }
 })
