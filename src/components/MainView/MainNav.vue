@@ -1,5 +1,5 @@
 <script setup>
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 
 
 import MaterialSymbolsSettings from '@/components/icons/MaterialSymbolsSettings.vue';
+import OperatorsSelector from "@/components/MainView/OperatorsSelector.vue";
 import { reactive } from 'vue';
 
 
@@ -81,27 +82,9 @@ const settings = reactive({
 
                 <!-- TODO: 上传文件逻辑 -->
                 <Input type="file" />
-
-                <div class="border rounded-md space-y-2">
-                    <Label for="operators" class="text-center">运算符</Label>
-                    <div id='operators' class="flex  space-x-2.5 h-10 items-center justify-between p-2">
-                        <Checkbox id="add" :checked="settings.operators.add"
-                            @update:checked="settings.operators.add = $event; console.log($event)" />
-                        <Label for="add">加法</Label>
-
-                        <Checkbox id="sub" :checked="settings.operators.sub"
-                            @update:checked="settings.operators.sub = $event" />
-                        <Label for="sub">减法</Label>
-
-                        <Checkbox id="mul" :checked="settings.operators.mul"
-                            @update:checked="settings.operators.mul = $event" />
-                        <Label for="mul">乘法</Label>
-
-                        <Checkbox id="div" :checked="settings.operators.div"
-                            @update:checked="settings.operators.div = $event" />
-                        <Label for="div">除法</Label>
-                    </div>
-                </div>
+                <!-- TODO: 事件处理 -->
+                <OperatorsSelector v-model:add="settings.operators.add" v-model:sub="settings.operators.sub"
+                    v-model:mul="settings.operators.mul" v-model:div="settings.operators.div" />
             </div>
         </SheetContent>
     </Sheet>
