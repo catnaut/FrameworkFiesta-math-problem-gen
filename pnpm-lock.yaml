@@ -1,9 +1,6 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  pinia:
-    specifier: ^2.1.7
-    version: 2.1.7(vue@3.4.21)
   vue:
     specifier: ^3.4.21
     version: 3.4.21
@@ -1089,10 +1086,6 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.4.21
       '@vue/shared': 3.4.21
-
-  /@vue/devtools-api@6.6.1:
-    resolution: {integrity: sha512-LgPscpE3Vs0x96PzSSB4IGVSZXZBZHpfxs+ZA1d+VEPwHdOXowy/Y2CsvCAIFrf+ssVU1pD1jidj505EpUnfbA==}
-    dev: false
 
   /@vue/devtools-core@7.0.19(vite@5.1.5)(vue@3.4.21):
     resolution: {integrity: sha512-IABq1zqLVpCHwQm1lSsKfwV7UxGuQfSnGYRe7oxSXVsBRvfCuH9r8a4g5x7vjLpVwJDiUn0Np9ZtGqK5by+BAw==}
@@ -3180,23 +3173,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /pinia@2.1.7(vue@3.4.21):
-    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}
-    peerDependencies:
-      '@vue/composition-api': ^1.4.0
-      typescript: '>=4.4.4'
-      vue: ^2.6.14 || ^3.3.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@vue/devtools-api': 6.6.1
-      vue: 3.4.21
-      vue-demi: 0.14.7(vue@3.4.21)
-    dev: false
-
   /pkg-types@1.0.3:
     resolution: {integrity: sha512-nN7pYi0AQqJnoLPC9eHFQ8AcyaixBUOwvqc5TDnIKCMEE6I0y8P7OKA7fPexsXGCGxQDl/cmrLAp26LhcwxZ4A==}
     dependencies:
@@ -3997,21 +3973,6 @@ packages:
   /vue-component-type-helpers@1.8.27:
     resolution: {integrity: sha512-0vOfAtI67UjeO1G6UiX5Kd76CqaQ67wrRZiOe7UAb9Jm6GzlUr/fC7CV90XfwapJRjpCMaZFhv1V0ajWRmE9Dg==}
     dev: true
-
-  /vue-demi@0.14.7(vue@3.4.21):
-    resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-    dependencies:
-      vue: 3.4.21
-    dev: false
 
   /vue-eslint-parser@9.4.2(eslint@8.49.0):
     resolution: {integrity: sha512-Ry9oiGmCAK91HrKMtCrKFWmSFWvYkpGglCeFAIqDdr9zdXmMMpJOmUJS7WWsW7fX81h6mwHmUZCQQ1E0PkSwYQ==}
