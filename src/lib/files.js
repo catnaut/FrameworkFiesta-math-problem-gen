@@ -13,8 +13,21 @@ const res = {
     excludeAcceptAllOption: true,
 };
 
+  /**
+   * @class Files
+   */
 const Files = {
+  /**
+   * @class useFileSystemAccess
+   * @see https://vueuse.org/useFileSystemAccess
+   * @example answer.data
+   */
     answer: useFileSystemAccess(res),
+  /**
+   * @class useFileSystemAccess
+   * @see https://vueuse.org/useFileSystemAccess
+   * @example problem.data
+   */
     problem: useFileSystemAccess(res),
     save:() => {
         // TODO: async
