@@ -25,7 +25,7 @@ const tableData = [
   {
     index: '1',
     problem: '1+2',
-    answer: '1',   
+    answer: '1',
   },
   {
     index: '2',
@@ -124,10 +124,6 @@ const tableData = [
         <PaginationLast />
         </PaginationList>
     </Pagination>
-    <div>
-        <Button class="mr-20 mt-5">Export Problem</Button>
-        <Button>Export Answer</Button>
-    </div>
   </div>
 </template>
 

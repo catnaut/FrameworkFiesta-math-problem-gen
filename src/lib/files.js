@@ -1,0 +1,29 @@
+import { useFileSystemAccess } from '@vueuse/core';
+
+const DATATYPE = 'Text' ;
+
+const res = {
+    dataType: DATATYPE,
+    types: [{
+      description: 'text',
+      accept: {
+        'text/plain': ['.txt', '.html'],
+      },
+    }],
+    excludeAcceptAllOption: true,
+};
+
+const Files = {
+    answer: useFileSystemAccess(res),
+    problem: useFileSystemAccess(res),
+    save:() => {
+        // TODO: async
+        this.problem.save()
+        this.answer.save()
+    }
+};
+
+export default Files;
+
+
+
