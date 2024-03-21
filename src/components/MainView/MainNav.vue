@@ -66,7 +66,7 @@ function generateRandomFraction(range) {
     // 分母 确保不为0 [1, range)
     let denominator = generateRandomInt(range - 1) + 1
     // 分子必须小于分母 且分子不为0（如果为0相当于生成了整数0）
-    while (numerator >= denominator || numerator === 0) {
+    while (numerator <= denominator || numerator === 0) {
         numerator = generateRandomInt(range - 1)
         denominator = generateRandomInt(range - 1) + 1
     }
