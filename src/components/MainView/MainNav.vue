@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 
 import MaterialSymbolsSettings from '@/components/icons/MaterialSymbolsSettings.vue';
 import OperatorsSelector from "@/components/MainView/OperatorsSelector.vue";
-import { reactive } from 'vue';
+import { reactive, defineEmits } from 'vue';
 
 
 import {
@@ -33,6 +33,15 @@ const settings = reactive({
 })
 
 let allProblem = []
+const emit = defineEmits(['getProblem'])
+let importedProblemContent = []
+
+const props = defineProps({
+    importedProblem: {
+        type: String,
+        default: ''
+    }
+})
 
 // TODO: 逻辑
 function toGenerate() {
@@ -139,6 +148,20 @@ function generateAllProblems(quantity, amountOfOperands, range) {
     for (let i = 0; i < quantity; i++) {
         allProblem.push(generateAProblem(amountOfOperands, range))
     }
+    // 向父组件传值
+    emit('getProblem', allProblem)
+}
+
+// 处理导入的问题 换成数组格式
+function handleImportedProblem() {
+    importedProblemContent = props.importedProblem.split('\n')
+    // 删除数组最后一个元素（是换行符）
+    importedProblemContent.pop()
+
+    // 去掉开头的序号
+    importedProblemContent.forEach((item, index) => {
+        importedProblemContent[index] = item.replace(/^\d+\.\s*/, '')
+    })
 }
 </script>
 
@@ -191,7 +214,7 @@ function generateAllProblems(quantity, amountOfOperands, range) {
                 <OperatorsSelector v-model:add="settings.operators.add" v-model:sub="settings.operators.sub"
                     v-model:mul="settings.operators.mul" v-model:div="settings.operators.div" />
 
-                <Button @click="toGenerate" class="mx-auto">Generate</Button>
+                <Button @click="toGenerate">Generate</Button>
             </div>
         </SheetContent>
     </Sheet>
