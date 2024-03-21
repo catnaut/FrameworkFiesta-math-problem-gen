@@ -83,8 +83,7 @@ const settings = reactive({
                 <!-- TODO: 上传文件逻辑 -->
                 <Input type="file" />
                 <!-- TODO: 事件处理 -->
-                <OperatorsSelector v-model:add="settings.operators.add" v-model:sub="settings.operators.sub"
-                    v-model:mul="settings.operators.mul" v-model:div="settings.operators.div" />
+                <OperatorsSelector v-model:operators="settings.operators" />
             </div>
         </SheetContent>
     </Sheet>
