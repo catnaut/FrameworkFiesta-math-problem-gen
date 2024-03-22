@@ -248,3 +248,35 @@ test('Generator generate should throw an error when settings are invalid', () =>
   generator.settings.quantity = 0
   expect(() => generator.generate()).toThrowError(Error('Invalid settings'))
 })
+
+test('Problem CalculateAnswer should return the correct result', () => {
+  const operatorArr = ['+', '-', '*', '/']
+  const numArr = ['1', '2', '3', '4', '5']
+  const problem = new Problem(operatorArr, numArr)
+  const result = problem.answer
+  expect(result).toBe(0.6)
+})
+
+// test('Problem CalculateAnswer should handle division by zero', () => {
+//   const operatorArr = ['/', '+']
+//   const numArr = ['1', '0', '2']
+//   const problem = new Problem(operatorArr, numArr)
+//   const result = problem.CalculateAnswer()
+//   expect(result).toBe(Infinity)
+// })
+
+// test('Problem CalculateAnswer should handle multiplication and addition', () => {
+//   const operatorArr = ['*', '+']
+//   const numArr = ['2', '3', '4']
+//   const problem = new Problem(operatorArr, numArr)
+//   const result = problem.CalculateAnswer()
+//   expect(result).toBe(10)
+// })
+
+// test('Problem CalculateAnswer should handle subtraction and division', () => {
+//   const operatorArr = ['-', '/']
+//   const numArr = ['10', '2', '5']
+//   const problem = new Problem(operatorArr, numArr)
+//   const result = problem.CalculateAnswer()
+//   expect(result).toBe(2)
+// })
