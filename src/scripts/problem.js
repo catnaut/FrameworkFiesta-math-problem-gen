@@ -37,6 +37,7 @@ export class Problem {
     this.operatorArr = operatorArr
     this.numArr = numArr
     this.expression = this.getExpression()
+    this.answer = this.CalculateAnswer()
   }
 
   /**
@@ -58,6 +59,36 @@ export class Problem {
       if (i !== this.numArr.length - 1) expression += ` ${this.operatorArr[i]} `
     }
     return expression
+  }
+
+  /**
+   * 计算答案
+   * @returns {Number} answer
+   */
+  CalculateAnswer() {
+    for (let i = 0; i < this.operatorArr.length; i++) {
+      if (this.operatorArr[i] === '/' || this.operatorArr[i] === '*') {
+        let left = strToNumber(this.numArr[i])
+        let right = strToNumber(this.numArr[i + 1])
+        let result = this.operatorArr[i] === '*' ? left * right : left / right
+        this.numArr.splice(i, 2, result)
+        this.operatorArr.splice(i, 1)
+        // 重新检查当前位置的操作符
+        i--
+      }
+    }
+    for (let i = 0; i < this.operatorArr.length; i++) {
+      if (this.operatorArr[i] === '+' || this.operatorArr[i] === '-') {
+        let left = strToNumber(this.numArr[i])
+        let right = strToNumber(this.numArr[i + 1])
+        let result = this.operatorArr[i] === '+' ? left + right : left - right
+        this.numArr.splice(i, 2, result)
+        this.operatorArr.splice(i, 1)
+        // 重新检查当前位置的操作符
+        i--
+      }
+    }
+    return this.numArr[0]
   }
 
   // TODO: 重写toString方法
