@@ -75,6 +75,22 @@ export function randomInt(range) {
   return Math.floor(Math.random() * range)
 }
 
+// TODO: 讨论是否应该转为小数计算，会不会导致较为严重的误差
+/**
+ * @description 将分数转换为小数
+ * @param {string} fraction - 分数
+ * @returns {number} A decimal number.
+ */
+export function fractionToNumber(fraction) {
+  if (fraction.includes("'")) {
+    let [integer, numerator, denominator] = fraction.split(/['/]/)
+    return Number(integer) + Number(numerator) / Number(denominator)
+  } else {
+    let [numerator, denominator] = fraction.split('/')
+    return Number(numerator) / Number(denominator)
+  }
+}
+
 export default class Generator {
   /**
    * @param {Settings} settings
@@ -159,22 +175,6 @@ export default class Generator {
     let integer = randomInt(range - 2) + 1
 
     return `${integer}'${numerator}/${denominator}`
-  }
-
-  // TODO: 讨论是否应该转为小数计算，会不会导致较为严重的误差
-  /**
-   * @description 将分数转换为小数
-   * @param {string} fraction - 分数
-   * @returns {number} A decimal number.
-   */
-  fractionToNumber(fraction) {
-    if (fraction.includes("'")) {
-      let [integer, numerator, denominator] = fraction.split(/['/]/)
-      return Number(integer) + Number(numerator) / Number(denominator)
-    } else {
-      let [numerator, denominator] = fraction.split('/')
-      return Number(numerator) / Number(denominator)
-    }
   }
 
   /**
