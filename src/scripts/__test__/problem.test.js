@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { randomInt, Problem } from '../problem'
+import { randomInt, strToNumber, Problem } from '../problem'
 import Generator from '../problem'
 
 test('randomInt', () => {
@@ -123,17 +123,21 @@ test('Generator randomMixedFraction should return a valid mixed fraction', () =>
   expect(num).toBeGreaterThan(den)
 })
 
-test('Generator fractionToNumber should convert fraction with whole number to decimal', () => {
-  const generator = new Generator(SETTINGS)
+test('strToNumber should convert integer to number', () => {
+  const integer = '1'
+  const result = strToNumber(integer)
+  expect(result).toBe(1)
+})
+
+test('strToNumber should convert fraction with whole number to decimal', () => {
   const fraction = "3'1/2"
-  const result = generator.fractionToNumber(fraction)
+  const result = strToNumber(fraction)
   expect(result).toBe(3.5)
 })
 
 test('Generator fractionToNumber should convert fraction without whole number to decimal', () => {
-  const generator = new Generator(SETTINGS)
   const fraction = '1/2'
-  const result = generator.fractionToNumber(fraction)
+  const result = strToNumber(fraction)
   expect(result).toBe(0.5)
 })
 
