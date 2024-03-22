@@ -77,18 +77,20 @@ export function randomInt(range) {
 
 // TODO: 讨论是否应该转为小数计算，会不会导致较为严重的误差
 /**
- * @description 将分数转换为小数
- * @param {string} fraction - 分数
+ * @description 将字符串转换为小数, 支持整数、真分数、带分数
+ * @param {string}
  * @returns {number} A decimal number.
  */
-export function fractionToNumber(fraction) {
-  if (fraction.includes("'")) {
-    let [integer, numerator, denominator] = fraction.split(/['/]/)
-    return Number(integer) + Number(numerator) / Number(denominator)
-  } else {
-    let [numerator, denominator] = fraction.split('/')
-    return Number(numerator) / Number(denominator)
-  }
+export function strToNumber(str) {
+  if (str.includes('/')) {
+    if (str.includes("'")) {
+      let [integer, numerator, denominator] = str.split(/['/]/)
+      return Number(integer) + Number(numerator) / Number(denominator)
+    } else {
+      let [numerator, denominator] = str.split('/')
+      return Number(numerator) / Number(denominator)
+    }
+  } else return Number(str)
 }
 
 export default class Generator {
