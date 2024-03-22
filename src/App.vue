@@ -1,6 +1,5 @@
 <script setup>
 import MainNav from './components/MainView/MainNav.vue';
-import MainTable from './components/MainView/MainTable.vue';
 import Files from '@/scripts/files'
 import { Button } from '@/components/ui/button'
 import { ref } from 'vue';
@@ -43,13 +42,14 @@ function receiveProblem(problem) {
 </script>
 
 <template>
-  <MainNav @getProblem="receiveProblem" :importedProblem="problemContent" />
-  <MainTable />
-  <div class="flex mx-auto w-4/5  items-center space-x-4 justify-center">
-    <Button class="" @click="handleImportProblem">Import Problem</Button>
-    <Button class="" @click="handleExportProblem">Export Problem</Button>
-    <Button class="" @click="handleImportAnswer">Import Answer</Button>
-    <Button class="" @click="handleExportAnswer">Export Answer</Button>
+  <div class="flex flex-col justify-center align-center h-screen">
+    <MainNav @getProblem="receiveProblem" :importedProblem="problemContent" />
+    <div class="flex mx-auto w-4/5  items-center space-x-4 justify-center">
+      <Button class="" @click="handleImportProblem">Import Problem</Button>
+      <Button class="" @click="handleExportProblem">Export Problem</Button>
+      <Button class="" @click="handleImportAnswer">Import Answer</Button>
+      <Button class="" @click="handleExportAnswer">Export Answer</Button>
+    </div>
   </div>
 </template>
 
