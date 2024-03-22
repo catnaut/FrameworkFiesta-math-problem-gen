@@ -1,42 +1,39 @@
-import { useFileSystemAccess } from '@vueuse/core';
+import { useFileSystemAccess } from '@vueuse/core'
 
-const DATATYPE = 'Text' ;
+const DATATYPE = 'Text'
 
 const res = {
-    dataType: DATATYPE,
-    types: [{
+  dataType: DATATYPE,
+  types: [
+    {
       description: 'text',
       accept: {
-        'text/plain': ['.txt', '.html'],
-      },
-    }],
-    excludeAcceptAllOption: true,
-};
+        'text/plain': ['.txt', '.html']
+      }
+    }
+  ],
+  excludeAcceptAllOption: true
+}
 
-  /**
-   * @class Files
-   */
+/**
+ * @class Files
+ */
 const Files = {
   /**
-   * @class useFileSystemAccess
    * @see https://vueuse.org/useFileSystemAccess
    * @example answer.data
    */
-    answer: useFileSystemAccess(res),
+  answer: useFileSystemAccess(res),
   /**
-   * @class useFileSystemAccess
    * @see https://vueuse.org/useFileSystemAccess
    * @example problem.data
    */
-    problem: useFileSystemAccess(res),
-    save:() => {
-        // TODO: async
-        this.problem.save()
-        this.answer.save()
-    }
-};
+  problem: useFileSystemAccess(res),
+  save: () => {
+    // TODO: async
+    this.problem.save()
+    this.answer.save()
+  }
+}
 
-export default Files;
-
-
-
+export default Files
