@@ -34,7 +34,14 @@ export class Problem {
     if (operatorArr.length !== numArr.length - 1) {
       throw new Error('Invalid problem')
     }
+    /**
+     * @readonly
+     */
     this.operatorArr = operatorArr
+
+    /**
+     * @readonly
+     */
     this.numArr = numArr
     this.expression = this.getExpression()
     this.answer = this.CalculateAnswer()
@@ -66,29 +73,31 @@ export class Problem {
    * @returns {Number} answer
    */
   CalculateAnswer() {
-    for (let i = 0; i < this.operatorArr.length; i++) {
-      if (this.operatorArr[i] === '/' || this.operatorArr[i] === '*') {
-        let left = strToNumber(this.numArr[i])
-        let right = strToNumber(this.numArr[i + 1])
-        let result = this.operatorArr[i] === '*' ? left * right : left / right
-        this.numArr.splice(i, 2, result)
-        this.operatorArr.splice(i, 1)
+    let operatorArr = [...this.operatorArr]
+    let numArr = [...this.numArr].map((num) => strToNumber(num))
+    for (let i = 0; i < operatorArr.length; i++) {
+      if (operatorArr[i] === '/' || operatorArr[i] === '*') {
+        let left = numArr[i]
+        let right = numArr[i + 1]
+        let result = operatorArr[i] === '*' ? left * right : left / right
+        numArr.splice(i, 2, result)
+        operatorArr.splice(i, 1)
         // 重新检查当前位置的操作符
         i--
       }
     }
-    for (let i = 0; i < this.operatorArr.length; i++) {
-      if (this.operatorArr[i] === '+' || this.operatorArr[i] === '-') {
-        let left = strToNumber(this.numArr[i])
-        let right = strToNumber(this.numArr[i + 1])
-        let result = this.operatorArr[i] === '+' ? left + right : left - right
-        this.numArr.splice(i, 2, result)
-        this.operatorArr.splice(i, 1)
+    for (let i = 0; i < operatorArr.length; i++) {
+      if (operatorArr[i] === '+' || operatorArr[i] === '-') {
+        let left = numArr[i]
+        let right = numArr[i + 1]
+        let result = operatorArr[i] === '+' ? left + right : left - right
+        numArr.splice(i, 2, result)
+        operatorArr.splice(i, 1)
         // 重新检查当前位置的操作符
         i--
       }
     }
-    return this.numArr[0]
+    return numArr[0]
   }
 
   // TODO: 重写toString方法
