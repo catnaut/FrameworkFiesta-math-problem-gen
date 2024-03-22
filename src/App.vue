@@ -1,6 +1,5 @@
 <script setup>
 import MainNav from './components/MainView/MainNav.vue';
-import MainTable from './components/MainView/MainTable.vue';
 import Files from '@/scripts/files'
 import { Button } from '@/components/ui/button'
 import { ref } from 'vue';
