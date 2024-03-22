@@ -99,7 +99,7 @@ export default class Generator {
    * @returns {Generator}
    */
   constructor(settings) {
-    this.settings = settings
+    this.settings = { ...settings }
     this.problemsList = []
     this.operators = this._getOperators()
   }
