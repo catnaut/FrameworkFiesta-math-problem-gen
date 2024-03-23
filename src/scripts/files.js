@@ -1,14 +1,16 @@
 import { useFileSystemAccess } from '@vueuse/core'
+import Papa from 'papaparse'
 
-const DATATYPE = 'Text'
+const DATATYPE = 'Blob'
 
 const res = {
   dataType: DATATYPE,
   types: [
     {
-      description: 'text',
+      description: 'csv file',
       accept: {
-        'text/plain': ['.txt', '.html']
+        // 'text/plain': []
+        'text/csv': ['.csv']
       }
     }
   ],
@@ -33,6 +35,15 @@ const Files = {
     // TODO: async
     this.problem.save()
     this.answer.save()
+  },
+  parse: async () => {
+    Papa.parse(Files.problem.data.value, {
+      header: false,
+      complete: (results) => {
+        console.log('Complete', results)
+      }
+    })
+    // console.log(result.data)
   }
 }
 
