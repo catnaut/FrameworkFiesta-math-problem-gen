@@ -69,6 +69,14 @@ export class Node {
   }
 
   /**
+   * 是否是满节点
+   * @returns {Boolean}
+   */
+  get isFull() {
+    return !!(this.left && this.right)
+  }
+
+  /**
    * 添加节点
    * @param {Node} node
    */
@@ -154,8 +162,11 @@ export class Node {
 
     return this._list
   }
-}
 
+  toString() {
+    return this.toList().join(' ')
+  }
+}
 export class Problem {
   /**
    * @description 初始化问题
