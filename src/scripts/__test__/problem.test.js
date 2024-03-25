@@ -277,6 +277,19 @@ test('Node isLeaf getter should return false for non-leaf nodes', () => {
   expect(node.isLeaf).toBe(false)
 })
 
+test('Node isFull getter should return true for nodes with both left and right children', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.isFull).toBe(true)
+})
+
+test('Node isFull getter should return false for nodes without both left and right children', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  expect(node.isFull).toBe(false)
+})
+
 test('Node add method should add a node as the left child if left is null', () => {
   const node = new Node('+')
   const leftNode = new Node('1')
@@ -284,12 +297,22 @@ test('Node add method should add a node as the left child if left is null', () =
   expect(node.left).toBe(leftNode)
 })
 
-test('Node add method should add a node as the right child if left is not null and right is null', () => {
+test('Node add method should change when right bigger than left', () => {
   const node = new Node('+')
   const leftNode = new Node('1')
   const rightNode = new Node('2')
   node.add(leftNode)
   node.add(rightNode)
+  expect(node.left).toBe(rightNode)
+})
+
+test('Node add method should add a node as the right child if left is not null and right is null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('2')
+  const rightNode = new Node('1')
+  node.add(leftNode)
+  node.add(rightNode)
+  expect(node.left).toBe(leftNode)
   expect(node.right).toBe(rightNode)
 })
 
