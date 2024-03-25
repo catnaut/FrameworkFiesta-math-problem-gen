@@ -116,6 +116,8 @@ export class Node {
             this._value = left * right
             break
           case '/':
+            // 不允许除数为0
+            if (right === 0) throw new Error('divided by zero')
             this._value = left / right
             break
           default:
@@ -155,7 +157,7 @@ export class Node {
     return this._list
   }
 
-  toString() {
+  get str() {
     return this.toList().join(' ')
   }
 }
@@ -187,9 +189,11 @@ export class Problem {
      * @readonly
      */
     this._numArr = numArr
-    this._expression = undefined
-    this.expression = this.getExpression()
-    this.answer = this.CalculateAnswer()
+
+    // 解构赋值
+    let { value: answer, str: expression } = this.buildTree()
+    this.answer = answer
+    this.expression = expression
   }
 
   /**
@@ -201,48 +205,33 @@ export class Problem {
   }
 
   /**
-   * 返回问题表达式
-   * @returns {String} expression
+   * 生成树, 从下往上,左节点始终大于右节点
+   * @returns {Node} root
+   * @throws {Error} 无效问题，操作符数量和操作数数量不匹配
+   * @throws {Error} 除数为0
    */
-  getExpression() {
-    let expression = ''
-    for (let i = 0; i < this._numArr.length; i++) {
-      expression += this._numArr[i]
-      if (i !== this._numArr.length - 1) expression += ` ${this._operatorArr[i]} `
-    }
-    return expression
-  }
+  buildTree() {
+    let operatorArr = [...this._operatorArr].reverse() // 逆序操作符数组使其后续使用 pop 为从第一个到最后一个
+    let numArr = [...this._numArr]
 
-  /**
-   * 计算答案
-   * @returns {Number} answer
-   */
-  CalculateAnswer() {
-    let operatorArr = [...this._operatorArr]
-    let numArr = [...this._numArr].map((num) => strToNumber(num))
-    for (let i = 0; i < operatorArr.length; i++) {
-      if (operatorArr[i] === '/' || operatorArr[i] === '*') {
-        let left = numArr[i]
-        let right = numArr[i + 1]
-        let result = operatorArr[i] === '*' ? left * right : left / right
-        numArr.splice(i, 2, result)
-        operatorArr.splice(i, 1)
-        // 重新检查当前位置的操作符
-        i--
+    // 自下而上构建树
+
+    // 使用 pop O(1) 操作 降低复杂度
+    let current = new Node(operatorArr.pop())
+
+    // let current = root
+    for (let i = 0; i < numArr.length; i++) {
+      let node = new Node(numArr[i])
+      if (!current.isFull) {
+        current.add(node)
+      } else {
+        let temp = new Node(operatorArr.pop())
+        temp.add(current)
+        temp.add(node)
+        current = temp
       }
     }
-    for (let i = 0; i < operatorArr.length; i++) {
-      if (operatorArr[i] === '+' || operatorArr[i] === '-') {
-        let left = numArr[i]
-        let right = numArr[i + 1]
-        let result = operatorArr[i] === '+' ? left + right : left - right
-        numArr.splice(i, 2, result)
-        operatorArr.splice(i, 1)
-        // 重新检查当前位置的操作符
-        i--
-      }
-    }
-    return numArr[0]
+    return current
   }
 
   // TODO: 重写toString方法
