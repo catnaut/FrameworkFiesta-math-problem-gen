@@ -23,6 +23,139 @@
  * @property {Number} answer - 答案
  */
 
+/**
+ * 优先级
+ * @type {Object}
+ */
+const priority = {
+  '+': 1,
+  '-': 1,
+  '*': 2,
+  '/': 2
+}
+
+/**
+ * AST 节点
+ * @property {Node} left - 左节点
+ * @property {Node} right - 右节点
+ * @property {String} originValue - 原始值
+ * @property {Boolean} isOperator - 是否是操作符
+ * @property {Number} value - 节点所代表树的值
+ */
+export class Node {
+  /**
+   * @param {String} value
+   */
+  constructor(value) {
+    this._value = undefined
+    this.left = null
+    this.right = null
+
+    /**
+     * @private 缓存列表
+     * @type {String[]}
+     */
+    this._list = undefined // 缓存列表
+    this.originValue = value // 原始值
+    value in priority ? (this.isOperator = true) : (this.isOperator = false) // 是否是操作符
+  }
+
+  /**
+   * 是否是叶子节点
+   * @returns {Boolean}
+   */
+  get isLeaf() {
+    return !this.left && !this.right
+  }
+
+  /**
+   * 添加节点
+   * @param {Node} node
+   */
+  add(node) {
+    if (!this.left) {
+      this.left = node
+    } else if (!this.right) {
+      // 有左节点 没有右节点 需要比较大小
+      if (this.left > node) {
+        // 当前节点的左节点的值大于新节点的值
+        this.right = this.left
+        this.left = node
+      } else {
+        this.right = node
+      }
+    } else {
+      throw new Error('Node is full')
+    }
+  }
+
+  /**
+   * 获取节点的值
+   * @returns {Number}
+   */
+  get value() {
+    if (this._value) return this._value // 有缓存值 直接返回
+
+    // 没有缓存值
+    if (this.isLeaf) {
+      // 叶子节点 直接从列表中取值转为数字
+      this._value = strToNumber(this.originValue)
+    } else {
+      // 非叶子节点 递归计算
+      const left = this.left.value
+      const right = this.right.value
+      if (this.isOperator) {
+        switch (this.originValue) {
+          case '+':
+            this._value = left + right
+            break
+          case '-':
+            this._value = left - right
+            break
+          case '*':
+            this._value = left * right
+            break
+          case '/':
+            this._value = left / right
+            break
+          default:
+            throw new Error('unknown Error') // 我们不应该走到这里
+        }
+      } else {
+        throw new Error('invalid node') // 非操作符节点
+      }
+    }
+    return this._value
+  }
+  /**
+   * 重写 valueOf 方法，实现比较
+   * @override
+   * @returns {Number}
+   */
+  valueOf() {
+    return this._value
+  }
+
+  /**
+   * 转化为列表
+   * @returns {String[]}
+   */
+  toList() {
+    if (this._list) return this._list // 有缓存值 直接返回
+
+    this._list = [this.originValue] // 初始化列表
+    if (this.isLeaf) {
+      // 叶子节点 直接返回
+      return this._list
+    }
+    // 非叶子节点 递归计算
+    if (this.left) this._list = [...this.left.toList(), ...this._list]
+    if (this.right) this._list = [...this._list, ...this.right.toList()]
+
+    return this._list
+  }
+}
+
 export class Problem {
   /**
    * @description 初始化问题
