@@ -357,7 +357,7 @@ export default class Generator {
    * @returns {boolean} 是否合法
    */
   _checkSettings() {
-    return this.settings.range > 0 && this.settings.quantity > 0
+    return this.settings.range > 0 && this.settings.quantity > 0 && this.operators.length > 0
   }
 
   /**
@@ -370,8 +370,15 @@ export default class Generator {
       throw new Error('Invalid settings')
     }
 
+    // 生成生成问题操作数数量
+    let amountOfOperators
+    this.operators.length > 3
+      ? (amountOfOperators = 3)
+      : (amountOfOperators = this.operators.length)
+
     for (let i = 0; i < this.settings.quantity; i++) {
-      this.problemsList.push(this.generateProblem(3, this.settings.range))
+      // TODO: 生成问题数字个数
+      this.problemsList.push(this.generateProblem(amountOfOperators, 5))
     }
   }
 
