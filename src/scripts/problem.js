@@ -285,14 +285,8 @@ export default class Generator {
     return Object.keys(this.settings.operators).filter((key) => this.settings.operators[key])
   }
 
-  /**
-   * @description 生成操作符
-   * @returns {string} An operator.
-   * @throws {Error} 没有操作符或者无法识别的操作符
-   */
-  randomOperator() {
-    const operator = this.operators[randomInt(this.operators.length)]
-    switch (operator) {
+  strToOperator(str) {
+    switch (str) {
       case 'add':
         return '+'
       case 'sub':
@@ -304,6 +298,27 @@ export default class Generator {
       default:
         throw new TypeError('Invalid operator')
     }
+  }
+
+  /**
+   * @description 生成操作符列表
+   * @param {number} length - 操作符数量
+   * @returns {String[]} An array of operators.
+   * @throws {Error} 没有操作符或者无法识别的操作符
+   */
+  randomOperatorList(length) {
+    let operatorList = []
+
+    if (this.operators.length === 0 || length > this.operators.length) {
+      throw new Error('Invalid operator length')
+    }
+
+    let operators = [...this.operators]
+    for (let i = 0; i < length; i++) {
+      let index = randomInt(operators.length)
+      operatorList.push(operators.splice(index, 1)[0])
+    }
+    return operatorList.map((operator) => this.strToOperator(operator))
   }
 
   /**
@@ -424,7 +439,11 @@ export default class Generator {
     }
 
     // 生成操作符
-    for (let i = 0; i < amountOfNumbers - 1; i++) operatorArr.push(this.randomOperator())
+    const operatorList = this.randomOperatorList(amountOfOperators)
+    for (let i = 0; i < amountOfNumbers - 1; i++) {
+      let index = randomInt(operatorList.length)
+      operatorArr.push(operatorList[index])
+    }
 
     return new Problem(operatorArr, numArr)
   }
