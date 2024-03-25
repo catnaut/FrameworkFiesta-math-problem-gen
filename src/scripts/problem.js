@@ -16,14 +16,6 @@
  */
 
 /**
- * @typedef {Object} Problem
- * @property {Number} operatorTypesCount - 操作符种类数量
- * @property {String[]} operators - 操作符
- * @property {string[]} expression - 表达式
- * @property {Number} answer - 答案
- */
-
-/**
  * 优先级
  * @type {Object}
  */
@@ -167,6 +159,14 @@ export class Node {
     return this.toList().join(' ')
   }
 }
+
+/**
+ * @typedef {Object} Problem
+ * @property {Number} operatorTypesCount - 操作符种类数量
+ * @property {String[]} operators - 操作符
+ * @property {string[]} expression - 表达式
+ * @property {Number} answer - 答案
+ */
 export class Problem {
   /**
    * @description 初始化问题
@@ -181,12 +181,13 @@ export class Problem {
     /**
      * @readonly
      */
-    this.operatorArr = operatorArr
+    this._operatorArr = operatorArr
 
     /**
      * @readonly
      */
-    this.numArr = numArr
+    this._numArr = numArr
+    this._expression = undefined
     this.expression = this.getExpression()
     this.answer = this.CalculateAnswer()
   }
@@ -196,7 +197,7 @@ export class Problem {
    * @returns {Number} operatorTypesCount
    */
   get operatorTypesCount() {
-    return new Set(this.operatorArr).size
+    return new Set(this._operatorArr).size
   }
 
   /**
@@ -205,9 +206,9 @@ export class Problem {
    */
   getExpression() {
     let expression = ''
-    for (let i = 0; i < this.numArr.length; i++) {
-      expression += this.numArr[i]
-      if (i !== this.numArr.length - 1) expression += ` ${this.operatorArr[i]} `
+    for (let i = 0; i < this._numArr.length; i++) {
+      expression += this._numArr[i]
+      if (i !== this._numArr.length - 1) expression += ` ${this._operatorArr[i]} `
     }
     return expression
   }
@@ -217,8 +218,8 @@ export class Problem {
    * @returns {Number} answer
    */
   CalculateAnswer() {
-    let operatorArr = [...this.operatorArr]
-    let numArr = [...this.numArr].map((num) => strToNumber(num))
+    let operatorArr = [...this._operatorArr]
+    let numArr = [...this._numArr].map((num) => strToNumber(num))
     for (let i = 0; i < operatorArr.length; i++) {
       if (operatorArr[i] === '/' || operatorArr[i] === '*') {
         let left = numArr[i]
@@ -392,7 +393,6 @@ export default class Generator {
   generate() {
     // TODO: 异步执行
     if (!this._checkSettings()) {
-      console.log(this.settings)
       throw new Error('Invalid settings')
     }
 
