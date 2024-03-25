@@ -133,7 +133,7 @@ export class Node {
    * @returns {Number}
    */
   valueOf() {
-    return this._value
+    return this.value
   }
 
   /**
