@@ -5,16 +5,25 @@ import Files from '@/scripts/files'
 import { Button } from '@/components/ui/button'
 import { ref } from 'vue';
 
-// 存放读取到的文件内容
-let problemContent = ref()
-let AnswerContet = ref()
+/**
+ * 问题集合
+ * @type {Ref<Set>}
+ */
+let problemSet = ref()
+
+/**
+ * 答案集合
+ * @type {Ref<Set>}
+ */
+let answerSet = ref()
+
 // 从子组件接收的问题
 let problemReceived = ''
 
 async function handleImportProblem() {
   await Files.problem.open()
-  problemContent.value = Files.problem.data.value
-  console.log('Problem Content\n', problemContent)
+  problemSet.value = await Files.csvToSet(Files.problem)
+  console.log('Problem Set\n', problemSet.value)
 }
 
 async function handleExportProblem() {
@@ -24,8 +33,8 @@ async function handleExportProblem() {
 
 async function handleImportAnswer() {
   await Files.answer.open()
-  AnswerContet.value = Files.answer.data.value
-  console.log('Answer Content\n', AnswerContet)
+  answerSet.value = await Files.csvToSet(Files.answer)
+  console.log('Answer Set\n', answerSet.value)
 }
 
 async function handleExportAnswer() {

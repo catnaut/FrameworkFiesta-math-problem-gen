@@ -36,14 +36,26 @@ const Files = {
     this.problem.save()
     this.answer.save()
   },
-  parse: async () => {
-    Papa.parse(Files.problem.data.value, {
-      header: false,
-      complete: (results) => {
-        console.log('Complete', results)
-      }
-    })
-    // console.log(result.data)
+  /**
+   * 传入一个文件对象，解析文件内容，返回问题集合
+   * @param {Ref} FileObject
+   * @returns {Set} ProblemSet
+   */
+  csvToSet: async (FileObject) => {
+    let result
+    try {
+      console.log(FileObject)
+      result = await Papa.parse(FileObject.data.value, {
+        header: false
+      })
+    } catch (error) {
+      // TODO: Error handling
+      console.error(error)
+    }
+    // TODO: 实现加载动画
+    let data = result.data.slice(1) // 去掉表头
+    data = data.filter((item) => item.length >= 2).map((item) => item.slice(0, 2)) // 去掉空行和多余的数据
+    return new Set(data) // 返回问题集合
   }
 }
 
