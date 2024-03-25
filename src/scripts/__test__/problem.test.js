@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { randomInt, strToNumber, Problem } from '../problem'
+import { randomInt, strToNumber, Problem, Node } from '../problem'
 import Generator from '../problem'
 
 test('randomInt', () => {
@@ -280,3 +280,109 @@ test('Problem CalculateAnswer should return the correct result', () => {
 //   const result = problem.CalculateAnswer()
 //   expect(result).toBe(2)
 // })
+test('Node constructor should create a new instance of Node', () => {
+  const node = new Node('+')
+  expect(node).toBeInstanceOf(Node)
+})
+
+test('Node constructor should set the value and isOperator properties correctly', () => {
+  const node = new Node('+')
+  expect(node._value).toBeUndefined()
+  expect(node.left).toBeNull()
+  expect(node.right).toBeNull()
+  expect(node.isOperator).toBe(true)
+})
+
+test('Node constructor should set the value and isOperator properties correctly', () => {
+  const node = new Node('1')
+  expect(node._value).toBeUndefined()
+  expect(node.left).toBeNull()
+  expect(node.right).toBeNull()
+  expect(node.isOperator).toBe(false)
+})
+
+test('Node isLeaf getter should return true for leaf nodes', () => {
+  const node = new Node('1')
+  expect(node.isLeaf).toBe(true)
+})
+
+test('Node isLeaf getter should return false for non-leaf nodes', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.isLeaf).toBe(false)
+})
+
+test('Node add method should add a node as the left child if left is null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  node.add(leftNode)
+  expect(node.left).toBe(leftNode)
+})
+
+test('Node add method should add a node as the right child if left is not null and right is null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  const rightNode = new Node('2')
+  node.add(leftNode)
+  node.add(rightNode)
+  expect(node.right).toBe(rightNode)
+})
+
+test('Node add method should throw an error if both left and right are not null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  const rightNode = new Node('2')
+  node.add(leftNode)
+  node.add(rightNode)
+  const newNode = new Node('3')
+  expect(() => node.add(newNode)).toThrowError(Error('Node is full'))
+})
+
+test('Node value getter should return the cached value if it exists', () => {
+  const node = new Node('1')
+  node._value = 1
+  expect(node.value).toBe(1)
+})
+
+test('Node value getter should return the value of a leaf node', () => {
+  const node = new Node('1')
+  node._list = ['1']
+  expect(node.value).toBe(1)
+})
+
+test('Node value getter should calculate the value of a non-leaf node', () => {
+  const node = new Node('+')
+  node.add(new Node('1'))
+  node.add(new Node('2'))
+  expect(node.value).toBe(3)
+})
+
+test('Node value getter should throw an error for an invalid node', () => {
+  const node = new Node('invalid')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(() => node.value).toThrowError(Error('invalid node'))
+})
+
+test('Node value getter should throw an error for an unknown Error', () => {
+  const node = new Node('1')
+  node._list = ['1']
+  node.left = new Node('1')
+  node.right = new Node('2')
+  node.isOperator = true
+  expect(() => node.value).toThrowError(Error('unknown Error'))
+})
+
+test('Node valueOf method should return the value of the node', () => {
+  const node = new Node('1')
+  node._value = 1
+  expect(node.valueOf()).toBe(1)
+})
+
+test('Node toList method should convert the node and its children to a list', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.toList()).toEqual(['1', '+', '2'])
+})
