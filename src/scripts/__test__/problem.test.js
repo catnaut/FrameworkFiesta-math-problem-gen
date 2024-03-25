@@ -61,23 +61,19 @@ test('Generator _getOperators should return a valid list of operators', () => {
   expect(operators.length).toBe(4)
 })
 
-test('Generator randomOperator should return a valid operator', () => {
+test('strToOperator should return the correct operator', () => {
   const generator = new Generator(SETTINGS)
-  const operator = generator.randomOperator()
-  expect(['+', '-', '*', '/']).toContain(operator)
+  expect(generator.strToOperator('add')).toBe('+')
+  expect(generator.strToOperator('sub')).toBe('-')
+  expect(generator.strToOperator('mul')).toBe('*')
+  expect(generator.strToOperator('div')).toBe('/')
 })
 
-test('Generator randomOperator should throw an error', () => {
+test('strToOperator should throw an error for invalid operator', () => {
   const generator = new Generator(SETTINGS)
-  generator.operators = []
-  expect(() => generator.randomOperator()).toThrowError(TypeError('Invalid operator'))
+  expect(() => generator.strToOperator('%')).toThrowError(TypeError('Invalid operator'))
 })
-test('Generator randomOperator should return a valid operator', () => {
-  const generator = new Generator(SETTINGS)
-  generator.operators = ['add']
-  const operator = generator.randomOperator()
-  expect(operator).toBe('+')
-})
+
 test('Generator randomInteger should return a valid random integer', () => {
   const generator = new Generator(SETTINGS)
   const random = generator.randomInteger(10)
@@ -163,7 +159,7 @@ test('Generator _checkSettings should return false when quantity is less than or
 
 test('Problem constructor should set operatorArr and numArr correctly', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '2', '3', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   expect(problem.operatorArr).toEqual(operatorArr)
   expect(problem.numArr).toEqual(numArr)
@@ -183,7 +179,7 @@ test('Problem constructor should throw an error when operatorArr and numArr leng
 
 test('Problem getExpression should return a valid expression', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '2', '3', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const expression = problem.getExpression()
   expect(expression).toBe('1 + 2 - 3 * 4 / 5')
@@ -191,7 +187,7 @@ test('Problem getExpression should return a valid expression', () => {
 
 test('Problem operatorTypesCount should return a valid count of operator types', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '2', '3', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const count = problem.operatorTypesCount
   expect(count).toBe(4)
@@ -214,15 +210,6 @@ test('Generator generateProblem should return a Problem instance with correct am
   const uniqueOperators = [...new Set(problem.operatorArr)]
   const operatorCount = uniqueOperators.length
   expect(operatorCount).toBeLessThanOrEqual(3)
-})
-
-test('Generator generateProblem should throw an error when range is invalid', () => {
-  const generator = new Generator(SETTINGS)
-  const amountOfOperators = 3
-  const range = 0
-  expect(() => generator.generateProblem(amountOfOperators, range)).toThrowError(
-    Error('Invalid range')
-  )
 })
 
 test('Generator generateProblem should throw an error when amount of operator is invalid', () => {
@@ -257,29 +244,6 @@ test('Problem CalculateAnswer should return the correct result', () => {
   expect(result).toBe(0.6)
 })
 
-// test('Problem CalculateAnswer should handle division by zero', () => {
-//   const operatorArr = ['/', '+']
-//   const numArr = ['1', '0', '2']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(Infinity)
-// })
-
-// test('Problem CalculateAnswer should handle multiplication and addition', () => {
-//   const operatorArr = ['*', '+']
-//   const numArr = ['2', '3', '4']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(10)
-// })
-
-// test('Problem CalculateAnswer should handle subtraction and division', () => {
-//   const operatorArr = ['-', '/']
-//   const numArr = ['10', '2', '5']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(2)
-// })
 test('Node constructor should create a new instance of Node', () => {
   const node = new Node('+')
   expect(node).toBeInstanceOf(Node)
@@ -385,4 +349,20 @@ test('Node toList method should convert the node and its children to a list', ()
   node.left = new Node('1')
   node.right = new Node('2')
   expect(node.toList()).toEqual(['1', '+', '2'])
+})
+
+test('Generator randomOperatorList should return a valid list of random operators', () => {
+  const generator = new Generator(SETTINGS)
+  generator.operators = ['add', 'sub', 'mul', 'div']
+  const operatorList = generator.randomOperatorList(3)
+  expect(operatorList).toHaveLength(3)
+  operatorList.forEach((operator) => {
+    expect(['+', '-', '*', '/']).toContain(operator)
+  })
+})
+
+test('Generator randomOperatorList should throw an error for invalid operator length', () => {
+  const generator = new Generator(SETTINGS)
+  generator.operators = ['add', 'sub', 'mul', 'div']
+  expect(() => generator.randomOperatorList(5)).toThrowError(Error('Invalid operator length'))
 })
