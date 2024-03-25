@@ -161,8 +161,8 @@ test('Problem constructor should set operatorArr and numArr correctly', () => {
   const operatorArr = ['+', '-', '*', '/']
   const numArr = ['1', '2', '3', '4', '5']
   const problem = new Problem(operatorArr, numArr)
-  expect(problem.operatorArr).toEqual(operatorArr)
-  expect(problem.numArr).toEqual(numArr)
+  expect(problem._operatorArr).toEqual(operatorArr)
+  expect(problem._numArr).toEqual(numArr)
 })
 
 test('Problem constructor should throw an error when operatorArr and numArr lengths do not match', () => {
