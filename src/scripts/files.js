@@ -1,7 +1,7 @@
 import { useFileSystemAccess } from '@vueuse/core'
 import Papa from 'papaparse'
 
-const DATATYPE = 'Blob'
+const DATATYPE = 'Text'
 
 const res = {
   dataType: DATATYPE,
@@ -9,7 +9,6 @@ const res = {
     {
       description: 'csv file',
       accept: {
-        // 'text/plain': []
         'text/csv': ['.csv']
       }
     }
