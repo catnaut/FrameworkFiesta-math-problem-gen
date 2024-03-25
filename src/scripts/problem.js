@@ -77,8 +77,8 @@ export class Node {
       this.left = node
     } else if (!this.right) {
       // 有左节点 没有右节点 需要比较大小
-      if (this.left > node) {
-        // 当前节点的左节点的值大于新节点的值
+      if (node > this.left) {
+        // 如果右节点大于左节点 交换位置
         this.right = this.left
         this.left = node
       } else {
