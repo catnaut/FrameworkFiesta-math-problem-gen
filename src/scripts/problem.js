@@ -379,18 +379,20 @@ export default class Generator {
   /**
    * @description 生成一道题目
    * @param {number} amountOfOperators 一道题中的操作数个数
-   * @param {number} range 最大数值范围
+   * @param {number} amountOfNumbers 一道题中的数字个数
    */
-  generateProblem(amountOfOperators, range) {
+  generateProblem(amountOfOperators, amountOfNumbers) {
     const probability = this.settings.probability
     let numArr = []
     let operatorArr = []
+    const range = this.settings.range
 
     if (amountOfOperators > 3) {
       throw new Error('Invalid amount of operators')
     }
+
     // 生成操作数
-    for (let i = 0; i < amountOfOperators; i++) {
+    for (let i = 0; i < amountOfNumbers; i++) {
       let num
 
       if (range > 1) {
@@ -415,7 +417,7 @@ export default class Generator {
     }
 
     // 生成操作符
-    for (let i = 0; i < amountOfOperators - 1; i++) operatorArr.push(this.randomOperator())
+    for (let i = 0; i < amountOfNumbers - 1; i++) operatorArr.push(this.randomOperator())
 
     return new Problem(operatorArr, numArr)
   }
