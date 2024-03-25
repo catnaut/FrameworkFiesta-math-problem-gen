@@ -1,7 +1,7 @@
 import { useFileSystemAccess } from '@vueuse/core'
 import Papa from 'papaparse'
 
-const DATATYPE = 'Blob'
+const DATATYPE = 'Text'
 
 const res = {
   dataType: DATATYPE,
@@ -9,7 +9,6 @@ const res = {
     {
       description: 'csv file',
       accept: {
-        // 'text/plain': []
         'text/csv': ['.csv']
       }
     }
@@ -44,7 +43,6 @@ const Files = {
   csvToSet: async (FileObject) => {
     let result
     try {
-      console.log(FileObject)
       result = await Papa.parse(FileObject.data.value, {
         header: false
       })
