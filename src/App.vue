@@ -6,41 +6,32 @@ import { Button } from '@/components/ui/button'
 import { ref } from 'vue';
 
 /**
+ * 问题答案集合
+ * @type {Ref<Set>}
+ */
+let problemAndAnswerSet = ref()
+
+/**
  * 问题集合
  * @type {Ref<Set>}
  */
-let problemSet = ref()
+let problemSet = ref(new Set())
 
 /**
  * 答案集合
  * @type {Ref<Set>}
  */
-let answerSet = ref()
+let answerSet = ref(new Set())
+
+/**
+ * 正确题号与错误题号数组
+ * @type {Ref<Array>}
+ */
+let correctNumber = ref([])
+let wrongNumber = ref([])
 
 // 从子组件接收的问题
 let problemReceived = ''
-
-async function handleImportProblem() {
-  await Files.problem.open()
-  problemSet.value = await Files.csvToSet(Files.problem)
-  console.log('Problem Set\n', problemSet.value)
-}
-
-async function handleExportProblem() {
-  Files.problem.data.value = problemReceived
-  await Files.problem.saveAs()
-}
-
-async function handleImportAnswer() {
-  await Files.answer.open()
-  answerSet.value = await Files.csvToSet(Files.answer)
-  console.log('Answer Set\n', answerSet.value)
-}
-
-async function handleExportAnswer() {
-  Files.answer.data.value = 'test content'
-  await Files.answer.save()
-}
 
 // 接受子组件传来的问题
 function receiveProblem(problem) {
@@ -49,16 +40,45 @@ function receiveProblem(problem) {
     problemReceived += `${index + 1}. ${item}\n`
   })
 }
+
+async function handleImportProblemAndAnswer() {
+  await Files.problem.open()
+  problemAndAnswerSet.value = Array.from(await Files.csvToSet(Files.problem))
+  console.log('problemAndAnswerSet Set\n', problemAndAnswerSet.value)
+  problemAndAnswerSet.value.forEach(item => {
+    problemSet.value.add(item[0])
+    answerSet.value.add(item[1])
+  })
+  console.log('problem', problemSet.value)
+  console.log('answer', answerSet.value)
+}
+
+async function handleExportProblem() {
+  Files.problem.data.value = problemReceived
+  await Files.problem.saveAs()
+}
+
+async function handleExportAnswer() {
+  Files.answer.data.value = 'test content'
+  await Files.answer.save()
+}
+
+async function checkAnswer() {
+  let writtenContent = `Correct: ${correctNumber.value.length} (...)\nWrong: ${wrongNumber.value.length} (...)
+  `
+  Files.checkResult.data.value = writtenContent
+  await Files.checkResult.save()
+}
 </script>
 
 <template>
   <MainNav @getProblem="receiveProblem" :importedProblem="problemContent" />
   <MainTable />
   <div class="flex mx-auto w-4/5  items-center space-x-4 justify-center">
-    <Button class="" @click="handleImportProblem">Import Problem</Button>
-    <Button class="" @click="handleExportProblem">Export Problem</Button>
-    <Button class="" @click="handleImportAnswer">Import Answer</Button>
-    <Button class="" @click="handleExportAnswer">Export Answer</Button>
+    <Button @click="handleImportProblemAndAnswer">Import Problem and Answer</Button>
+    <Button @click="checkAnswer">Check Answer</Button>
+    <Button @click="handleExportProblem">Export Problem</Button>
+    <Button @click="handleExportAnswer">Export Answer</Button>
   </div>
 </template>
 
