@@ -71,13 +71,14 @@ async function checkAnswer() {
 </script>
 
 <template>
-  <MainNav @getProblem="receiveProblem" :importedProblem="problemContent" />
-  <MainTable />
-  <div class="flex mx-auto w-4/5  items-center space-x-4 justify-center">
-    <Button @click="handleImportProblemAndAnswer">Import Problem and Answer</Button>
-    <Button @click="checkAnswer">Check Answer</Button>
-    <Button @click="handleExportProblem">Export Problem</Button>
-    <Button @click="handleExportAnswer">Export Answer</Button>
+  <div class="flex flex-col justify-center align-center h-screen">
+    <MainNav @getProblem="receiveProblem" :importedProblem="problemContent" />
+    <div class="flex mx-auto w-4/5  items-center space-x-4 justify-center">
+      <Button @click="handleImportProblemAndAnswer">Import Problem and Answer</Button>
+      <Button @click="checkAnswer">Check Answer</Button>
+      <Button @click="handleExportProblem">Export Problem</Button>
+      <Button @click="handleExportAnswer">Export Answer</Button>
+    </div>
   </div>
 </template>
 
