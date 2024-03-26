@@ -1,13 +1,13 @@
 # 结对项目
 
-| 这个作业属于哪个课程 | [首页 - 软件工程2024 - 广东工业大学 - 班级博客 - 博客园 (cnblogs.com)](https://edu.cnblogs.com/campus/gdgy/SoftwareEngineering2024/) |
-| -------------------- | ------------------------------------------------------------ |
+| 这个作业属于哪个课程 | [首页 - 软件工程2024 - 广东工业大学 - 班级博客 - 博客园 (cnblogs.com)](https://edu.cnblogs.com/campus/gdgy/SoftwareEngineering2024/)           |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | 这个作业要求在哪里   | [结对项目 - 作业 - 软件工程2024 - 班级博客 - 博客园 (cnblogs.com)](https://edu.cnblogs.com/campus/gdgy/SoftwareEngineering2024/homework/13137) |
-| 这个作业的目标       | 两人合作完成一个自动生成小学四则运算题目的项目               |
+| 这个作业的目标       | 两人合作完成一个自动生成小学四则运算题目的项目                                                                                                 |
 
 | 项目成员 | 学号       |
 | -------- | ---------- |
-| 李宇康   |            |
+| 李宇康   | 3122004871 |
 | 梁丽贤   | 3222004639 |
 
 GitHub地址：[catnaut/FrameworkFiesta-math-problem-gen: FrameworkFiesta :D (github.com)](https://github.com/catnaut/FrameworkFiesta-math-problem-gen)
