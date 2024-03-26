@@ -444,7 +444,12 @@ export default class Generator {
       let index = randomInt(operatorList.length)
       operatorArr.push(operatorList[index])
     }
-
-    return new Problem(operatorArr, numArr)
+    let problem
+    try {
+      problem = new Problem(operatorArr, numArr)
+    } catch (error) {
+      return this.generateProblem(amountOfOperators, amountOfNumbers)
+    }
+    return problem
   }
 }
