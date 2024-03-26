@@ -255,3 +255,15 @@ test('Generator randomMixedFraction should return a valid mixed fraction', () =>
 
 
 ## 六、项目小结
+
+### 挑战
+
+  - 如何生成括号
+  - 如何防止题目重复
+  - 处理文件
+
+#### 解决方案
+
+  - 在二叉树内判断优先级，如果优先关系与父子关系相反，意味着需要增加括号保证原有的计算顺序
+  - 使用 Map 对象（类哈希表）以唯一表达式作为 key 防止题目重复
+  - 使用 papaparse 库
