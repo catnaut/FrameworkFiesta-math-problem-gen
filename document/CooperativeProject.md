@@ -186,11 +186,11 @@ test('Generator randomMixedFraction should return a valid mixed fraction', () =>
 
 #### 测试结果
 
-![image-20240326140827914](C:\Users\26441\AppData\Roaming\Typora\typora-user-images\image-20240326140827914.png)
+![image-20240326140827914](./img/testResult1.png)
 
 #### 测试覆盖率
 
-![image-20240326140718346](C:\Users\26441\AppData\Roaming\Typora\typora-user-images\image-20240326140718346.png)
+![image-20240326140718346](./img/coverage1.png)
 
 
 
