@@ -159,7 +159,7 @@ test('Generator _checkSettings should return false when quantity is less than or
 
 test('Problem constructor should set operatorArr and numArr correctly', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = ['1', '2', '3', '4', '5']
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   expect(problem._operatorArr).toEqual(operatorArr)
   expect(problem._numArr).toEqual(numArr)
@@ -179,15 +179,15 @@ test('Problem constructor should throw an error when operatorArr and numArr leng
 
 test('Problem getExpression should return a valid expression', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = ['1', '2', '3', '4', '5']
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
-  const expression = problem.getExpression()
-  expect(expression).toBe('1 + 2 - 3 * 4 / 5')
+  const expression = problem.expression
+  expect(expression).toBe('4 * 3 + 1 - 2 / 5')
 })
 
 test('Problem operatorTypesCount should return a valid count of operator types', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = ['1', '2', '3', '4', '5']
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const count = problem.operatorTypesCount
   expect(count).toBe(4)
@@ -238,10 +238,10 @@ test('Generator generate should throw an error when settings are invalid', () =>
 
 test('Problem CalculateAnswer should return the correct result', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = ['1', '2', '3', '4', '5']
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const result = problem.answer
-  expect(result).toBe(0.6)
+  expect(result).toBe(1.6)
 })
 
 test('Node constructor should create a new instance of Node', () => {
@@ -388,4 +388,15 @@ test('Generator randomOperatorList should throw an error for invalid operator le
   const generator = new Generator(SETTINGS)
   generator.operators = ['add', 'sub', 'mul', 'div']
   expect(() => generator.randomOperatorList(5)).toThrowError(Error('Invalid operator length'))
+})
+
+test('Problem buildTree should return a valid tree', () => {
+  const operatorArr = ['-', '/']
+  const numArr = ['1', '3', '5']
+  const problem = new Problem(operatorArr, numArr)
+  const tree = problem.buildTree()
+
+  // Verify the root node
+  expect(tree).toBeInstanceOf(Node)
+  expect(tree.value).toBe(2.5)
 })
