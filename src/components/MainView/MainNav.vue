@@ -17,8 +17,6 @@ const settings = reactive({
         mul: true,
         div: true
     },
-    autoCheck: true,
-    showAnswer: true,
     probability: {
         integer: 0.5,
         fraction: {

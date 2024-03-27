@@ -7,8 +7,6 @@
  *  @property {boolean} operators.sub - 减法
  *  @property {boolean} operators.mul - 乘法
  *  @property {boolean} operators.div - 除法
- *  @property {boolean} autoCheck - 自动检查
- *  @property {boolean} showAnswer - 显示答案
  *  @property {Object} probability - 生成概率
  *  @property {number} probability.integer - 整数
  *  @property {number} probability.fraction - 分数
