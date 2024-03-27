@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { randomInt, strToNumber, Problem } from '../problem'
+import { randomInt, strToNumber, Problem, Node } from '../problem'
 import Generator from '../problem'
 
 test('randomInt', () => {
@@ -17,8 +17,6 @@ test('randomInt', () => {
  *  @property {boolean} operators.sub - 减法
  *  @property {boolean} operators.mul - 乘法
  *  @property {boolean} operators.div - 除法
- *  @property {boolean} autoCheck - 自动检查
- *  @property {boolean} showAnswer - 显示答案
  */
 
 const SETTINGS = {
@@ -30,8 +28,6 @@ const SETTINGS = {
     mul: true,
     div: true
   },
-  autoCheck: true,
-  showAnswer: true,
   probability: {
     integer: 0.5,
     fraction: {
@@ -61,23 +57,19 @@ test('Generator _getOperators should return a valid list of operators', () => {
   expect(operators.length).toBe(4)
 })
 
-test('Generator randomOperator should return a valid operator', () => {
+test('strToOperator should return the correct operator', () => {
   const generator = new Generator(SETTINGS)
-  const operator = generator.randomOperator()
-  expect(['+', '-', '*', '/']).toContain(operator)
+  expect(generator.strToOperator('add')).toBe('+')
+  expect(generator.strToOperator('sub')).toBe('-')
+  expect(generator.strToOperator('mul')).toBe('*')
+  expect(generator.strToOperator('div')).toBe('/')
 })
 
-test('Generator randomOperator should throw an error', () => {
+test('strToOperator should throw an error for invalid operator', () => {
   const generator = new Generator(SETTINGS)
-  generator.operators = []
-  expect(() => generator.randomOperator()).toThrowError(TypeError('Invalid operator'))
+  expect(() => generator.strToOperator('%')).toThrowError(TypeError('Invalid operator'))
 })
-test('Generator randomOperator should return a valid operator', () => {
-  const generator = new Generator(SETTINGS)
-  generator.operators = ['add']
-  const operator = generator.randomOperator()
-  expect(operator).toBe('+')
-})
+
 test('Generator randomInteger should return a valid random integer', () => {
   const generator = new Generator(SETTINGS)
   const random = generator.randomInteger(10)
@@ -163,10 +155,10 @@ test('Generator _checkSettings should return false when quantity is less than or
 
 test('Problem constructor should set operatorArr and numArr correctly', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
-  expect(problem.operatorArr).toEqual(operatorArr)
-  expect(problem.numArr).toEqual(numArr)
+  expect(problem._operatorArr).toEqual(operatorArr)
+  expect(problem._numArr).toEqual(numArr)
 })
 
 test('Problem constructor should throw an error when operatorArr and numArr lengths do not match', () => {
@@ -183,15 +175,15 @@ test('Problem constructor should throw an error when operatorArr and numArr leng
 
 test('Problem getExpression should return a valid expression', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
-  const expression = problem.getExpression()
-  expect(expression).toBe('1 + 2 - 3 * 4 / 5')
+  const expression = problem.expression
+  expect(expression).toBe('4 * 3 + 1 - 2 / 5')
 })
 
 test('Problem operatorTypesCount should return a valid count of operator types', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = [1, 2, 3, 4, 5]
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const count = problem.operatorTypesCount
   expect(count).toBe(4)
@@ -214,15 +206,6 @@ test('Generator generateProblem should return a Problem instance with correct am
   const uniqueOperators = [...new Set(problem.operatorArr)]
   const operatorCount = uniqueOperators.length
   expect(operatorCount).toBeLessThanOrEqual(3)
-})
-
-test('Generator generateProblem should throw an error when range is invalid', () => {
-  const generator = new Generator(SETTINGS)
-  const amountOfOperators = 3
-  const range = 0
-  expect(() => generator.generateProblem(amountOfOperators, range)).toThrowError(
-    Error('Invalid range')
-  )
 })
 
 test('Generator generateProblem should throw an error when amount of operator is invalid', () => {
@@ -251,32 +234,165 @@ test('Generator generate should throw an error when settings are invalid', () =>
 
 test('Problem CalculateAnswer should return the correct result', () => {
   const operatorArr = ['+', '-', '*', '/']
-  const numArr = ['1', '2', '3', '4', '5']
+  const numArr = ['1', '3', '2', '4', '5']
   const problem = new Problem(operatorArr, numArr)
   const result = problem.answer
-  expect(result).toBe(0.6)
+  expect(result).toBe(1.6)
 })
 
-// test('Problem CalculateAnswer should handle division by zero', () => {
-//   const operatorArr = ['/', '+']
-//   const numArr = ['1', '0', '2']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(Infinity)
-// })
+test('Node constructor should create a new instance of Node', () => {
+  const node = new Node('+')
+  expect(node).toBeInstanceOf(Node)
+})
 
-// test('Problem CalculateAnswer should handle multiplication and addition', () => {
-//   const operatorArr = ['*', '+']
-//   const numArr = ['2', '3', '4']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(10)
-// })
+test('Node constructor should set the value and isOperator properties correctly', () => {
+  const node = new Node('+')
+  expect(node._value).toBeUndefined()
+  expect(node.left).toBeNull()
+  expect(node.right).toBeNull()
+  expect(node.isOperator).toBe(true)
+})
 
-// test('Problem CalculateAnswer should handle subtraction and division', () => {
-//   const operatorArr = ['-', '/']
-//   const numArr = ['10', '2', '5']
-//   const problem = new Problem(operatorArr, numArr)
-//   const result = problem.CalculateAnswer()
-//   expect(result).toBe(2)
-// })
+test('Node constructor should set the value and isOperator properties correctly', () => {
+  const node = new Node('1')
+  expect(node._value).toBeUndefined()
+  expect(node.left).toBeNull()
+  expect(node.right).toBeNull()
+  expect(node.isOperator).toBe(false)
+})
+
+test('Node isLeaf getter should return true for leaf nodes', () => {
+  const node = new Node('1')
+  expect(node.isLeaf).toBe(true)
+})
+
+test('Node isLeaf getter should return false for non-leaf nodes', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.isLeaf).toBe(false)
+})
+
+test('Node isFull getter should return true for nodes with both left and right children', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.isFull).toBe(true)
+})
+
+test('Node isFull getter should return false for nodes without both left and right children', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  expect(node.isFull).toBe(false)
+})
+
+test('Node add method should add a node as the left child if left is null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  node.add(leftNode)
+  expect(node.left).toBe(leftNode)
+})
+
+test('Node add method should change when right bigger than left', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  const rightNode = new Node('2')
+  node.add(leftNode)
+  node.add(rightNode)
+  expect(node.left).toBe(rightNode)
+})
+
+test('Node add method should add a node as the right child if left is not null and right is null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('2')
+  const rightNode = new Node('1')
+  node.add(leftNode)
+  node.add(rightNode)
+  expect(node.left).toBe(leftNode)
+  expect(node.right).toBe(rightNode)
+})
+
+test('Node add method should throw an error if both left and right are not null', () => {
+  const node = new Node('+')
+  const leftNode = new Node('1')
+  const rightNode = new Node('2')
+  node.add(leftNode)
+  node.add(rightNode)
+  const newNode = new Node('3')
+  expect(() => node.add(newNode)).toThrowError(Error('Node is full'))
+})
+
+test('Node value getter should return the cached value if it exists', () => {
+  const node = new Node('1')
+  node._value = 1
+  expect(node.value).toBe(1)
+})
+
+test('Node value getter should return the value of a leaf node', () => {
+  const node = new Node('1')
+  node._list = ['1']
+  expect(node.value).toBe(1)
+})
+
+test('Node value getter should calculate the value of a non-leaf node', () => {
+  const node = new Node('+')
+  node.add(new Node('1'))
+  node.add(new Node('2'))
+  expect(node.value).toBe(3)
+})
+
+test('Node value getter should throw an error for an invalid node', () => {
+  const node = new Node('invalid')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(() => node.value).toThrowError(Error('invalid node'))
+})
+
+test('Node value getter should throw an error for an unknown Error', () => {
+  const node = new Node('1')
+  node._list = ['1']
+  node.left = new Node('1')
+  node.right = new Node('2')
+  node.isOperator = true
+  expect(() => node.value).toThrowError(Error('unknown Error'))
+})
+
+test('Node valueOf method should return the value of the node', () => {
+  const node = new Node('1')
+  node._value = 1
+  expect(node.valueOf()).toBe(1)
+})
+
+test('Node toList method should convert the node and its children to a list', () => {
+  const node = new Node('+')
+  node.left = new Node('1')
+  node.right = new Node('2')
+  expect(node.toList()).toEqual(['1', '+', '2'])
+})
+
+test('Generator randomOperatorList should return a valid list of random operators', () => {
+  const generator = new Generator(SETTINGS)
+  generator.operators = ['add', 'sub', 'mul', 'div']
+  const operatorList = generator.randomOperatorList(3)
+  expect(operatorList).toHaveLength(3)
+  operatorList.forEach((operator) => {
+    expect(['+', '-', '*', '/']).toContain(operator)
+  })
+})
+
+test('Generator randomOperatorList should throw an error for invalid operator length', () => {
+  const generator = new Generator(SETTINGS)
+  generator.operators = ['add', 'sub', 'mul', 'div']
+  expect(() => generator.randomOperatorList(5)).toThrowError(Error('Invalid operator length'))
+})
+
+test('Problem buildTree should return a valid tree', () => {
+  const operatorArr = ['-', '/']
+  const numArr = ['1', '3', '5']
+  const problem = new Problem(operatorArr, numArr)
+  const tree = problem.buildTree()
+
+  // Verify the root node
+  expect(tree).toBeInstanceOf(Node)
+  expect(tree.value).toBe(2.5)
+})

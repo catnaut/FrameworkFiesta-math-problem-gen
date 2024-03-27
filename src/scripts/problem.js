@@ -7,13 +7,158 @@
  *  @property {boolean} operators.sub - 减法
  *  @property {boolean} operators.mul - 乘法
  *  @property {boolean} operators.div - 除法
- *  @property {boolean} autoCheck - 自动检查
- *  @property {boolean} showAnswer - 显示答案
  *  @property {Object} probability - 生成概率
  *  @property {number} probability.integer - 整数
  *  @property {number} probability.fraction - 分数
  *  @property {number} probability.fraction.mixedFraction - 分数中带分数的概率
  */
+
+/**
+ * 优先级
+ * @type {Object}
+ */
+const priority = {
+  '+': 1,
+  '-': 1,
+  '*': 2,
+  '/': 2
+}
+
+/**
+ * AST 节点
+ * @property {Node} left - 左节点
+ * @property {Node} right - 右节点
+ * @property {String} originValue - 原始值
+ * @property {Boolean} isOperator - 是否是操作符
+ * @property {Number} value - 节点所代表树的值
+ */
+export class Node {
+  /**
+   * @param {String} value
+   */
+  constructor(value) {
+    this._value = undefined
+    this.left = null
+    this.right = null
+
+    /**
+     * @private 缓存列表
+     * @type {String[]}
+     */
+    this._list = undefined // 缓存列表
+    this.originValue = value // 原始值
+    value in priority ? (this.isOperator = true) : (this.isOperator = false) // 是否是操作符
+  }
+
+  /**
+   * 是否是叶子节点
+   * @returns {Boolean}
+   */
+  get isLeaf() {
+    return !this.left && !this.right
+  }
+
+  /**
+   * 是否是满节点
+   * @returns {Boolean}
+   */
+  get isFull() {
+    return !!(this.left && this.right)
+  }
+
+  /**
+   * 添加节点
+   * @param {Node} node
+   */
+  add(node) {
+    if (!this.left) {
+      this.left = node
+    } else if (!this.right) {
+      // 有左节点 没有右节点 需要比较大小
+      if (node > this.left) {
+        // 如果右节点大于左节点 交换位置
+        this.right = this.left
+        this.left = node
+      } else {
+        this.right = node
+      }
+    } else {
+      throw new Error('Node is full')
+    }
+  }
+
+  /**
+   * 获取节点的值
+   * @returns {Number}
+   */
+  get value() {
+    if (this._value) return this._value // 有缓存值 直接返回
+
+    // 没有缓存值
+    if (this.isLeaf) {
+      // 叶子节点 直接从列表中取值转为数字
+      this._value = strToNumber(this.originValue)
+    } else {
+      // 非叶子节点 递归计算
+      const left = this.left.value
+      const right = this.right.value
+      if (this.isOperator) {
+        switch (this.originValue) {
+          case '+':
+            this._value = left + right
+            break
+          case '-':
+            this._value = left - right
+            break
+          case '*':
+            this._value = left * right
+            break
+          case '/':
+            // 不允许除数为0
+            if (right === 0) throw new Error('divided by zero')
+            this._value = left / right
+            break
+          default:
+            throw new Error('unknown Error') // 我们不应该走到这里
+        }
+      } else {
+        throw new Error('invalid node') // 非操作符节点
+      }
+    }
+    return this._value
+  }
+  /**
+   * 重写 valueOf 方法，实现比较
+   * @override
+   * @returns {Number}
+   */
+  valueOf() {
+    return this.value
+  }
+
+  /**
+   * 转化为列表
+   * @returns {String[]}
+   */
+  toList() {
+    if (this._list) return this._list // 有缓存值 直接返回
+
+    this._list = [this.originValue] // 初始化列表
+    if (this.isLeaf) {
+      // 叶子节点 直接返回
+      return this._list
+    }
+    // 非叶子节点 递归计算
+    if (this.left) this._list = [...this.left.toList(), ...this._list]
+    if (this.right) this._list = [...this._list, ...this.right.toList()]
+
+    return this._list
+  }
+
+  get str() {
+    return this.toList().join(' ')
+  }
+}
 
 /**
  * @typedef {Object} Problem
@@ -22,7 +167,6 @@
  * @property {string[]} expression - 表达式
  * @property {Number} answer - 答案
  */
-
 export class Problem {
   /**
    * @description 初始化问题
@@ -37,14 +181,17 @@ export class Problem {
     /**
      * @readonly
      */
-    this.operatorArr = operatorArr
+    this._operatorArr = operatorArr
 
     /**
      * @readonly
      */
-    this.numArr = numArr
-    this.expression = this.getExpression()
-    this.answer = this.CalculateAnswer()
+    this._numArr = numArr
+
+    // 解构赋值
+    let { value: answer, str: expression } = this.buildTree()
+    this.answer = answer
+    this.expression = expression
   }
 
   /**
@@ -52,52 +199,37 @@ export class Problem {
    * @returns {Number} operatorTypesCount
    */
   get operatorTypesCount() {
-    return new Set(this.operatorArr).size
+    return new Set(this._operatorArr).size
   }
 
   /**
-   * 返回问题表达式
-   * @returns {String} expression
+   * 生成树, 从下往上,左节点始终大于右节点
+   * @returns {Node} root
+   * @throws {Error} 无效问题，操作符数量和操作数数量不匹配
+   * @throws {Error} 除数为0
    */
-  getExpression() {
-    let expression = ''
-    for (let i = 0; i < this.numArr.length; i++) {
-      expression += this.numArr[i]
-      if (i !== this.numArr.length - 1) expression += ` ${this.operatorArr[i]} `
-    }
-    return expression
-  }
+  buildTree() {
+    let operatorArr = [...this._operatorArr].reverse() // 逆序操作符数组使其后续使用 pop 为从第一个到最后一个
+    let numArr = [...this._numArr]
 
-  /**
-   * 计算答案
-   * @returns {Number} answer
-   */
-  CalculateAnswer() {
-    let operatorArr = [...this.operatorArr]
-    let numArr = [...this.numArr].map((num) => strToNumber(num))
-    for (let i = 0; i < operatorArr.length; i++) {
-      if (operatorArr[i] === '/' || operatorArr[i] === '*') {
-        let left = numArr[i]
-        let right = numArr[i + 1]
-        let result = operatorArr[i] === '*' ? left * right : left / right
-        numArr.splice(i, 2, result)
-        operatorArr.splice(i, 1)
-        // 重新检查当前位置的操作符
-        i--
+    // 自下而上构建树
+
+    // 使用 pop O(1) 操作 降低复杂度
+    let current = new Node(operatorArr.pop())
+
+    // let current = root
+    for (let i = 0; i < numArr.length; i++) {
+      let node = new Node(numArr[i])
+      if (!current.isFull) {
+        current.add(node)
+      } else {
+        let temp = new Node(operatorArr.pop())
+        temp.add(current)
+        temp.add(node)
+        current = temp
       }
     }
-    for (let i = 0; i < operatorArr.length; i++) {
-      if (operatorArr[i] === '+' || operatorArr[i] === '-') {
-        let left = numArr[i]
-        let right = numArr[i + 1]
-        let result = operatorArr[i] === '+' ? left + right : left - right
-        numArr.splice(i, 2, result)
-        operatorArr.splice(i, 1)
-        // 重新检查当前位置的操作符
-        i--
-      }
-    }
-    return numArr[0]
+    return current
   }
 
   // TODO: 重写toString方法
@@ -152,14 +284,8 @@ export default class Generator {
     return Object.keys(this.settings.operators).filter((key) => this.settings.operators[key])
   }
 
-  /**
-   * @description 生成操作符
-   * @returns {string} An operator.
-   * @throws {Error} 没有操作符或者无法识别的操作符
-   */
-  randomOperator() {
-    const operator = this.operators[randomInt(this.operators.length)]
-    switch (operator) {
+  strToOperator(str) {
+    switch (str) {
       case 'add':
         return '+'
       case 'sub':
@@ -171,6 +297,27 @@ export default class Generator {
       default:
         throw new TypeError('Invalid operator')
     }
+  }
+
+  /**
+   * @description 生成操作符列表
+   * @param {number} length - 操作符数量
+   * @returns {String[]} An array of operators.
+   * @throws {Error} 没有操作符或者无法识别的操作符
+   */
+  randomOperatorList(length) {
+    let operatorList = []
+
+    if (this.operators.length === 0 || length > this.operators.length) {
+      throw new Error('Invalid operator length')
+    }
+
+    let operators = [...this.operators]
+    for (let i = 0; i < length; i++) {
+      let index = randomInt(operators.length)
+      operatorList.push(operators.splice(index, 1)[0])
+    }
+    return operatorList.map((operator) => this.strToOperator(operator))
   }
 
   /**
@@ -224,7 +371,7 @@ export default class Generator {
    * @returns {boolean} 是否合法
    */
   _checkSettings() {
-    return this.settings.range > 0 && this.settings.quantity > 0
+    return this.settings.range > 0 && this.settings.quantity > 0 && this.operators.length > 0
   }
 
   /**
@@ -233,12 +380,18 @@ export default class Generator {
   generate() {
     // TODO: 异步执行
     if (!this._checkSettings()) {
-      console.log(this.settings)
       throw new Error('Invalid settings')
     }
 
+    // 生成生成问题操作数数量
+    let amountOfOperators
+    this.operators.length > 3
+      ? (amountOfOperators = 3)
+      : (amountOfOperators = this.operators.length)
+
     for (let i = 0; i < this.settings.quantity; i++) {
-      this.problemsList.push(this.generateProblem(3, this.settings.range))
+      // TODO: 生成问题数字个数
+      this.problemsList.push(this.generateProblem(amountOfOperators, 5))
     }
   }
 
@@ -246,18 +399,20 @@ export default class Generator {
   /**
    * @description 生成一道题目
    * @param {number} amountOfOperators 一道题中的操作数个数
-   * @param {number} range 最大数值范围
+   * @param {number} amountOfNumbers 一道题中的数字个数
    */
-  generateProblem(amountOfOperators, range) {
+  generateProblem(amountOfOperators, amountOfNumbers) {
     const probability = this.settings.probability
     let numArr = []
     let operatorArr = []
+    const range = this.settings.range
 
     if (amountOfOperators > 3) {
       throw new Error('Invalid amount of operators')
     }
+
     // 生成操作数
-    for (let i = 0; i < amountOfOperators; i++) {
+    for (let i = 0; i < amountOfNumbers; i++) {
       let num
 
       if (range > 1) {
@@ -282,8 +437,17 @@ export default class Generator {
     }
 
     // 生成操作符
-    for (let i = 0; i < amountOfOperators - 1; i++) operatorArr.push(this.randomOperator())
-
-    return new Problem(operatorArr, numArr)
+    const operatorList = this.randomOperatorList(amountOfOperators)
+    for (let i = 0; i < amountOfNumbers - 1; i++) {
+      let index = randomInt(operatorList.length)
+      operatorArr.push(operatorList[index])
+    }
+    let problem
+    try {
+      problem = new Problem(operatorArr, numArr)
+    } catch (error) {
+      return this.generateProblem(amountOfOperators, amountOfNumbers)
+    }
+    return problem
   }
 }
